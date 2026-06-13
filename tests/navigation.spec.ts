@@ -41,4 +41,36 @@ test('Check left menu options', async ({ page }) => {
 
     expect(currentMenuItems[0]).toEqual(expectMenuItems[0]); //Valida que 1ra posición de currentMenuItems sea igual a 1ra posición de expectMenuItems
 
-})
+});
+
+test('Navigate through the left panel', async ({ page }) => {
+
+    await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+    await page.getByRole('textbox', { name: 'Username' }).fill('Admin');
+    await page.getByRole('textbox', { name: 'Password' }).fill('admin123');
+    await page.getByRole('button', { name: 'Login' }).click();
+
+    const leftMenuItems = page.getByRole('navigation', { name: 'Sidepanel' }).getByRole('listitem');
+    const currentMenuItemsCount = await leftMenuItems.count();
+
+
+    for (let i = 0; i < currentMenuItemsCount; i++) {
+
+        const menuItem = leftMenuItems.nth(i);
+        const menuText = await menuItem.innerText();
+
+        console.log('Current menu item', menuText);
+
+        if (menuText !== 'Maintenance') {
+
+            await menuItem.click();
+
+        } else {
+
+            await menuItem.click();
+            await page.goBack();
+
+        }
+
+    }
+});
